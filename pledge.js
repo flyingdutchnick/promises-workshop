@@ -12,7 +12,8 @@ var $Promise = function(){
 	this.callHandlers = function(num) {
 		if (this.state !== 'pending') {
 			this.handlerGroups.forEach(function(func) { 
-		 		if(typeof func.successCb === 'function') {
+		 		if(typeof func.successCb === 'function' && func.counter === 0) {
+		 			func.counter++;
 		 			return func.successCb(num);
 				}
 			}) 
@@ -24,7 +25,7 @@ var $Promise = function(){
 			this.handlerGroups.push({successCb : false, errorCb: false});
 		}
 		else { 
-			this.handlerGroups.push({successCb : suc, errorCb: reject}); 
+			this.handlerGroups.push({successCb : suc, errorCb: reject, counter: 0}); 
 		}
 		this.callHandlers(this.value);	
 	}
@@ -37,12 +38,13 @@ var Deferral = function(){
 			this.$promise.value = value;
 			this.$promise.state = 'resolved';
 			this.$promise.changed = true;
+			this.$promise.callHandlers(this.$promise.value);
 		} 
 	}
 	this.reject = function(value){
 		if(this.$promise.state !== 'rejected' && this.$promise.changed !== true) {
-			this.$promise.value = value
-			this.$promise.state = 'rejected'
+			this.$promise.value = value;
+			this.$promise.state = 'rejected';
 			this.$promise.changed = true;
 		} 
 	}

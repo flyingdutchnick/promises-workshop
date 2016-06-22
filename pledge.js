@@ -12,8 +12,9 @@ var $Promise = function(){
 	this.callHandlers = function(num) {
 		if (this.state !== 'pending') {
 			this.handlerGroups.forEach(function(func) { 
-		 		if(typeof func.successCb === 'function' && func.counter === 0 && func.rejected !== 'true') {
+		 		if(typeof func.successCb === 'function' && func.counter === 0){
 		 			func.counter++;
+		 			console.log(func);
 		 			return func.successCb(num);
 				}
 			}) 

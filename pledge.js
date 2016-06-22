@@ -12,9 +12,18 @@ var $Promise = function(){
 	this.callHandlers = function(num) {
 		if (this.state !== 'pending') {
 			this.handlerGroups.forEach(function(func) { 
-		 		if(typeof func.successCb === 'function' && func.counter === 0) {
+		 		if(typeof func.successCb === 'function' && func.counter === 0 && func.rejected !== 'true') {
 		 			func.counter++;
 		 			return func.successCb(num);
+				}
+			}) 
+		};
+		if (this.state !== 'pending') {
+			this.handlerGroups.forEach(function(func) { 
+		 		if(typeof func.errorCb === 'function' && func.counter === 0) {
+		 			func.counter++;
+		 			func.rejected = true
+		 			return func.errorCb(num);
 				}
 			}) 
 		};
@@ -25,7 +34,7 @@ var $Promise = function(){
 			this.handlerGroups.push({successCb : false, errorCb: false});
 		}
 		else { 
-			this.handlerGroups.push({successCb : suc, errorCb: reject, counter: 0}); 
+			this.handlerGroups.push({successCb : suc, errorCb: reject, counter: 0, rejected: false}); 
 		}
 		this.callHandlers(this.value);	
 	}

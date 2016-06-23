@@ -128,6 +128,7 @@ describe('A promise', function(){
     it('calls all its success handlers in order one time when resolved', function(){
       promiseForNum.then( setFoo10 );
       promiseForNum.then( addToFoo );
+      console.log(numDeferral.resolve(25))
       numDeferral.resolve( 25 );
       expect( foo ).toBe( 35 );
     });
